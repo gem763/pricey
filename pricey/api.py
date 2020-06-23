@@ -162,12 +162,15 @@ class Pricer:
         return _stats
     
     
-    def plot_stats(self, nfwd, up_thres=0.01, sortby='up_prob', excludes=[], h=0.25):
+    def plot_stats(self, nfwd, up_thres=0.01, sortby='up_prob', excludes=[], h=0.25, title=True):
         _stats = self.stats(nfwd, up_thres=up_thres)
         _stats = _stats.drop(excludes, axis=0).sort_values(by=sortby, axis=0)
 
         fig, axes = plt.subplots(nrows=1, ncols=5, figsize=(12, len(_stats)*h), sharey=True)
-        fig.suptitle(str(nfwd) + ' days forward returns forecast', fontsize=15, fontweight='bold');
+        
+        if title:
+            fig.suptitle(str(nfwd) + ' days forward returns forecast', fontsize=15, fontweight='bold');
+            
         opt = {'linewidth':1, 'edgecolor':'k', 'zorder':2, 'height':0.8, 'alpha':1}#, 'color':'lightblue'}
 
         axes[0].barh(_stats.index, _stats['rband_fair'], **opt)
