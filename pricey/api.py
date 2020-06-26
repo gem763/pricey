@@ -15,7 +15,8 @@ from sklearn.preprocessing import StandardScaler, Imputer, MinMaxScaler
 
 
 class Pricer:
-    def __init__(self, p, scaler=None, reducer=None, fitscale=0.05, prob=0.7, howfar=250):
+    def __init__(self, p, scaler=None, reducer=None, fitscale=0.05, prob=0.7, howfar=250, progress=False):
+        self.asof = p.index[-1]
         self.p = p
         self.fitscale = fitscale
         self.prob = prob
@@ -24,7 +25,7 @@ class Pricer:
         self.scaler = scaler if scaler is not None else StandardScaler()
         self.reducer = reducer if reducer is not None else PCA(n_components=0.9, random_state=0)
         self.comp = self._reduce()
-        self.comp_forecast = self._comp_forecast()
+        self.comp_forecast = self._comp_forecast(progress=progress)
         self.p_forecast = self._p_forecast()
         
         
@@ -87,10 +88,10 @@ class Pricer:
         fig.tight_layout()
 
         
-    def _comp_forecast(self):
+    def _comp_forecast(self, progress=True):
         comp_forecast = pd.DataFrame()
         width = self.prob**(1/self.comp.shape[1])
-        for _cname, _comp in tqdm_notebook(list(self.comp.items())):
+        for _cname, _comp in (tqdm_notebook(list(self.comp.items())) if progress else list(self.comp.items())):
             df = _comp.reset_index()
             df.columns = ['ds', 'y']
             comp_forecast[_cname] = _prophet(df, fitscale=self.fitscale, width=width, howfar=self.howfar)
