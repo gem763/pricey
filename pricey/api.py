@@ -5,13 +5,13 @@ from itertools import product
 from tqdm import tqdm_notebook
 
 from scipy.stats import norm, laplace
-from fbprophet import Prophet
+from prophet import Prophet
 from IPython.core.debugger import set_trace
 import logging
 logging.getLogger('fbprophet').setLevel(logging.WARNING)
 
 from sklearn.decomposition import PCA, KernelPCA, FastICA
-from sklearn.preprocessing import StandardScaler, Imputer, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler#, Imputer
 
 
 class Pricer:
